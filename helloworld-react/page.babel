@@ -1,0 +1,57 @@
+import {ipcRenderer} from 'electron'
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+
+class HelloWorld extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {results: null}
+  }
+  componentDidMount() {
+    ipcRenderer.on('asynchronous-reply', (event, lines) => {
+      this.setState({results: lines})
+    })
+  }
+  render() {
+    return <div>
+      <h2>Versions</h2>
+      <table>
+        <tbody>{this.renderVersions()}</tbody>
+      </table>
+
+      {!this.state.results && this.renderButton()}
+      {this.state.results && this.renderResults()}
+    </div>
+  }
+  renderVersions() {
+    return ['node', 'chrome', 'electron'].map(name => {
+      return <tr key={name}>
+        <td style={{textTransform: 'capitalize'}}>
+          <b>{name}:</b>
+        </td>
+        <td>{process.versions[name]}</td>
+      </tr>
+    })
+  }
+  renderButton() {
+    return <div>
+      <button onClick={this.handleClick}>Show electron processes</button>
+    </div>
+  }
+  renderResults() {
+    let lists = this.state.results.map(line => {
+      return <li key={line}>{line}</li>
+    })
+
+    return <div>
+      <h2>Processes</h2>
+      <ul style={{fontFamily: 'monospace'}}>{lists}</ul>
+    </div>
+  }
+  handleClick() {
+    ipcRenderer.send('asynchronous-message', 'get processes')
+  }
+}
+
+ReactDOM.render(<HelloWorld /> , document.getElementById('content'))
