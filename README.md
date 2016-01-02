@@ -14,7 +14,7 @@ To build:
 invoke build
 ```
 
-To run an example, cd into the example directory and run:
+To run an example, cd into an example directory and run:
 
 ```
 electron .

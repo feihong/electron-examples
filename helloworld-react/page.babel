@@ -9,8 +9,8 @@ class HelloWorld extends React.Component {
     this.state = {results: null}
   }
   componentDidMount() {
-    ipcRenderer.on('asynchronous-reply', (event, lines) => {
-      this.setState({results: lines})
+    ipcRenderer.on('asynchronous-reply', (event, results) => {
+      this.setState({results: results})
     })
   }
   render() {
@@ -40,13 +40,28 @@ class HelloWorld extends React.Component {
     </div>
   }
   renderResults() {
-    let lists = this.state.results.map(line => {
-      return <li key={line}>{line}</li>
+    let rows = this.state.results.map(result => {
+      return <tr key={result.pid}>
+        <td>{result.pid}</td>
+        <td>{result.user}</td>
+        <td>{result.command}</td>
+      </tr>
     })
 
     return <div>
       <h2>Processes</h2>
-      <ul style={{fontFamily: 'monospace'}}>{lists}</ul>
+      <table className='processes'>
+        <thead>
+          <tr>
+            <th>pid</th>
+            <th>user</th>
+            <th>command</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows}
+        </tbody>
+      </table>
     </div>
   }
   handleClick() {
