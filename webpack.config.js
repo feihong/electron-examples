@@ -6,14 +6,14 @@ const webpackTargetElectronRenderer = require('webpack-target-electron-renderer'
 
 let config = {
   entry: {
-    'helloworld-react': './helloworld-react/page.babel',
+    'helloworld-react': './helloworld-react/page.es6',
   },
   output: {
     path: path.resolve('.'),
     filename: '[name]/page.bundle.js'
   },
   resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.js', '.babel']
+    extensions: ['', '.webpack.js', '.web.js', '.js', '.es6']
   },
   node: {
     // Don't shim the process module, because electron provides it.
@@ -22,7 +22,7 @@ let config = {
   module: {
     loaders: [
       {
-        test: /\.babel$/,
+        test: /\.es6$/,
         loader: 'babel',
         query: {
           presets: ['react', 'es2015'],
