@@ -10,22 +10,21 @@ const ipcMain = electron.ipcMain
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-app.on('window-all-closed', () => {
-  app.quit()
-})
+app.on('window-all-closed', () => app.quit())
 
 app.on('ready', function() {
   mainWindow = new BrowserWindow({width: 800, height: 600})
   mainWindow.loadURL('file://' + __dirname + '/index.html')
-  mainWindow.webContents.openDevTools()
+  mainWindow.on('closed', () => mainWindow = null)
+  // mainWindow.webContents.openDevTools()
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('channel', 'SupremeOverlord')
   })
 })
 
 // Messages received from the renderer process get printed to standard out.
-ipcMain.on('channel', (event, mesg) => {
-  console.log('Received message: ' + mesg)
-  console.log('-----')
+ipcMain.on('channel', (event, values) => {
+  console.log(JSON.stringify(values, null, 2))
+  app.quit()
 })
