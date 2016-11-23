@@ -2,9 +2,10 @@ from invoke import run, task
 
 
 @task
-def watch():
-    run('webpack --progress --colors -d --watch')
+def watch(ctx):
+    ctx.run('webpack --progress --colors -d --watch')
+
 
 @task
 def build():
-    run('webpack --progress --colors --optimize-minimize')
+    ctx.run('webpack --progress --colors --optimize-minimize')

@@ -1,20 +1,25 @@
-Feihong's electron examples
-===========================
 
-Installation:
+# Electron Examples
 
-```
-npm install -g electron-prebuilt webpack
-pip install -r requirements.txt
-```
-
-To build:
+## Installation
 
 ```
-invoke build
+mkvirtualenv -p python3 electron
+pip install Invoke
+npm install -g electron webpack
 ```
 
-To run an example, cd into an example directory and run:
+## Build
+
+To build the helloworld-react example, run:
+
+```
+inv build
+```
+
+## Run example
+
+cd into an example directory and run:
 
 ```
 electron .

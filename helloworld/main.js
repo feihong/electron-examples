@@ -1,4 +1,5 @@
 'use strict'
+
 const exec = require('child_process').exec
 
 const electron = require('electron')
