@@ -1,15 +1,22 @@
-<h1>Command line arguments</h1>
+<h1>Command line arguments and remote module</h1>
 
 <ul></ul>
+
+<p>
+  Result of cool function: <span></span>
+</p>
 
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 <script src='http://code.jquery.com/jquery-3.1.1.slim.min.js'></script>
 <script>
-let args = require('electron').remote.process.argv
+let {remote} = require('electron')
+let main = remote.require('./main')
 
 $(document).ready(() => {
-  for (let arg of args.slice(2)) {
+  for (let arg of remote.process.argv.slice(2)) {
     $('<li></li>').text(arg).appendTo('ul')
   }
 })
+
+$('span').text(main.coolFunction())
 </script>

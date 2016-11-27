@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const {app, BrowserWindow} = require('electron')
 
@@ -19,3 +19,7 @@ app.on('ready', function() {
     mainWindow = null
   })
 })
+
+exports.coolFunction = function() {
+  return 'You are cool!'
+}
