@@ -18,6 +18,12 @@ def shutdown():
     return 'ok'
 
 
+@app.route('/random-number/')
+def random_number():
+    import random
+    return str(random.randint(1, 100))
+
+
 def get_unused_port():
     import socket
     s = socket.socket()
