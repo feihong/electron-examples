@@ -3,16 +3,16 @@
 const http = require('http')
 const {app, BrowserWindow} = require('electron')
 
-// Port should be the first argument.
+// Port should be the first user-specified argument.
 let port = process.argv[2]
 let url = 'http://localhost:' + port + '/'
-let appReady = new Promise(resolve => {
-  app.on('ready', resolve)
-})
+// We need to make a promise for the app ready event because it's likely to
+// fire before the server is ready.
+let appReady = new Promise(resolve =>  app.on('ready', resolve))
 
 let mainWindow
 
-setTimeout(checkUrlReady, 100)
+setTimeout(checkUrlReady, 0)
 
 function checkUrlReady() {
   let req = http.get(url, (res) => {
@@ -47,6 +47,6 @@ function createWindow() {
 app.on('window-all-closed', () => {
   app.quit()
   http.get(url + 'shutdown/', (res) => {
-    console.log('Response status code: ' + res.statusCode)
+    console.log('Shutdown response status code: ' + res.statusCode)
   })
 })

@@ -46,4 +46,7 @@ if __name__ == '__main__':
     port = get_unused_port()
     proc = subprocess.Popen(['electron', 'main.js', str(port)])
     app.port = port
+    # Simulate the case where the server may need to do a lot of initialization
+    # before starting up.
+    import time; time.sleep(1)
     app.run(port=port)
