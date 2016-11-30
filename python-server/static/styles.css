@@ -1,0 +1,10 @@
+div.random {
+  font-size: 5rem;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+}
+
+span.url {
+  font-family: monospace;
+  font-size: 1.2rem;
+  font-weight: bold;
+}

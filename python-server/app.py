@@ -18,10 +18,12 @@ def shutdown():
     return 'ok'
 
 
-@app.route('/random-number/')
+@app.route('/random-text/')
 def random_number():
     import random
-    return str(random.randint(1, 100))
+    hanzi = chr(random.randint(0x4e00, 0x9fff))
+    num = random.randint(1, 5000)
+    return '{} {:4d}'.format(hanzi, num)
 
 
 def get_unused_port():

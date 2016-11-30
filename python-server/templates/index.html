@@ -1,20 +1,28 @@
+<html>
+<head>
+  <link rel='stylesheet' href='/static/styles.css'>
+</head>
+<body>
+
 <h1>Python Server</h1>
 
-<p>Server is running on <code>localhost:{{ port }}</code><p>
+<p>Server is running on <span class='url'>http://localhost:{{ port }}/</span><p>
 
-<div id='random-number' style='font-size: 2rem'>?</div>
+<div class='random'>?</div>
 
-<button onclick='getRandomNumber()'>Get random number</button>
+<button onclick='getRandomText()'>Get random text</button>
 
 <script>
-getRandomNumber()
+getRandomText()
 
-function getRandomNumber() {
-  fetch('/random-number/').then(res => {
+function getRandomText() {
+  fetch('/random-text/').then(res => {
     return res.text()
   }).then(text => {
     console.log(text)
-    document.querySelector('#random-number').textContent = text
+    document.querySelector('div.random').textContent = text
   })
 }
 </script>
+
+</body></html>
