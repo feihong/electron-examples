@@ -40,13 +40,16 @@ function createWindow() {
 
     mainWindow.on('closed', () => {
       mainWindow = null
+      quit()
     })
   })
 }
 
-app.on('window-all-closed', () => {
+function quit() {
   app.quit()
   http.get(url + 'shutdown/', (res) => {
     console.log('Shutdown response status code: ' + res.statusCode)
   })
-})
+}
+
+app.on('window-all-closed', quit)
