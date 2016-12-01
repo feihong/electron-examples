@@ -1,5 +1,7 @@
 <h1>Command line arguments and remote module</h1>
 
+<p class='status'></p>
+
 <ul></ul>
 
 <p>
@@ -21,7 +23,13 @@ let {remote} = require('electron')
 let main = remote.require('./main')
 
 $(document).ready(() => {
-  for (let arg of remote.process.argv.slice(2)) {
+  let args = remote.process.argv.slice(2)
+  let mesg = (args.length === 0) ?
+    'No command line arguments' :
+    args.length + ' arguments found'
+  $('p.status').text(mesg)
+
+  for (let arg of args) {
     $('<li></li>').text(arg).appendTo('ul')
   }
 })
