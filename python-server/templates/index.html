@@ -12,17 +12,6 @@
 
 <button onclick='getRandomText()'>Get random text</button>
 
-<script>
-getRandomText()
-
-function getRandomText() {
-  fetch('/random-text/').then(res => {
-    return res.text()
-  }).then(text => {
-    console.log(text)
-    document.querySelector('div.random').textContent = text
-  })
-}
-</script>
+<script src='/static/client.js'></script>
 
 </body></html>

@@ -22,5 +22,7 @@ inv build
 cd into an example directory and run:
 
 ```
-electron .
+electron main.js
 ```
+
+If `package.json` is present, then `electron .` will work as well.
