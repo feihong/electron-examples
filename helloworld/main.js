@@ -2,14 +2,15 @@
 
 const exec = require('child_process').exec
 
-const electron = require('electron')
-const app = electron.app
-const BrowserWindow = electron.BrowserWindow
-const ipcMain = electron.ipcMain
+const {app, BrowserWindow, ipcMain} = require('electron')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+
+console.log('Node ', process.versions.node)
+console.log('Chrome ', process.versions.chrome)
+console.log('Electron ', process.versions.electron)
 
 app.on('window-all-closed', () => {
   app.quit()
