@@ -1,55 +1,55 @@
 'use strict';
 
 const http = require('http')
+const child_process = require('child_process')
 const {app, BrowserWindow} = require('electron')
 
-// Port should be the first user-specified argument.
-let port = process.argv[2]
-let url = 'http://localhost:' + port + '/'
-// We need to make a promise for the app ready event because it's likely to
-// fire before the server is ready.
-let appReady = new Promise(resolve =>  app.on('ready', resolve))
-
 let mainWindow
+let serverProcess
 
-setTimeout(checkUrlReady, 0)
+main()
 
-function checkUrlReady() {
-  let req = http.get(url, (res) => {
-    if (res.statusCode === 200) {
-      console.log('Succesfully connected')
-      createWindow()
-    } else {
-      throw 'Unable to connect to URL'
-    }
-  }).on('error', (err) => {
-    if (err.code === 'ECONNREFUSED') {
-      console.log('Connection refused, trying again...')
-      setTimeout(checkUrlReady, 100)
-    } else {
-      throw err
-    }
+function main() {
+  let appReady = new Promise(resolve =>  app.on('ready', resolve))
+  let gotPort = new Promise(resolve => {
+    let server = http.createServer()
+    server.listen(0)
+    server.on('listening', () => {
+      resolve(server.address().port)
+      server.close()
+    })
+  })
+
+  gotPort.then(port => {
+    startServer(port)
+    appReady.then(() => createWindow(port))
   })
 }
 
-function createWindow() {
-  appReady.then(() => {
-    mainWindow = new BrowserWindow({width: 800, height: 600})
-    mainWindow.loadURL(url)
-    mainWindow.webContents.openDevTools()
+function startServer(port) {
+  console.log(`Starting server on localhost:${port}`)
+  let cmd = `python server.py ${port}`
 
-    mainWindow.on('closed', () => {
-      mainWindow = null
-      quit()
-    })
+  serverProcess = child_process.exec(cmd)
+  serverProcess.on('error', err => {
+    console.log(`Error with server: ${err}`)
+  })
+}
+
+function createWindow(port) {
+  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow.loadURL('http://localhost:' + port)
+  mainWindow.webContents.openDevTools()
+
+  mainWindow.on('closed', () => {
+    mainWindow = null
+    quit()
   })
 }
 
 function quit() {
+  serverProcess.kill('SIGINT')
   app.quit()
-  http.get(url + 'shutdown/', (res) => {
-    console.log('Shutdown response status code: ' + res.statusCode)
-  })
 }
 
 app.on('window-all-closed', quit)
