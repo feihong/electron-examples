@@ -1,3 +1,6 @@
+// How many seconds to wait for the server to start.
+const TIMEOUT = 2
+
 const http = require('http')
 const child_process = require('child_process')
 const {app, BrowserWindow} = require('electron')
@@ -15,14 +18,7 @@ function main() {
     let values = yield Promise.all([appReady, getUnusedPort()])
     let port = values[1]
     startServer(port)
-    // Check up to 10 times if the server is up.
-    for (let i=0; i < 10; i++) {
-      if (yield serverIsUp(port)) {
-        break
-      }
-      console.log('Server is not up yet, sleeping...')
-      yield sleep(0.2)
-    }
+    yield waitForServerStartUp(port)
     createWindow(port)
   })
 }
@@ -48,6 +44,24 @@ function getUnusedPort() {
       resolve(server.address().port)
       server.close()
     })
+  })
+}
+
+function waitForServerStartUp(port) {
+  return coroutine(function *() {
+    let start = new Date()
+    while (true) {
+      if (yield serverIsUp(port)) {
+        break
+      }
+      console.log('Server is not up yet, sleeping...')
+      yield sleep(0.2)
+
+      let now = new Date()
+      if ((now - start) > (TIMEOUT * 1000)) {
+        throw 'Server took too long to start up'
+      }
+    }
   })
 }
 
@@ -91,13 +105,17 @@ app.on('window-all-closed', quit)
 // Allows you to write asynchronous code in a more readable way.
 // Source: https://github.com/feihong/node-examples/blob/master/coroutine.js
 function coroutine(fn) {
-  function run(gen, value) {
+  function run(gen, resolve, value) {
     let result = gen.next(value)
-    if (!result.done) {
-      result.value.then(value => setImmediate(run, gen, value))
+    if (result.done) {
+      resolve()
+    } else {
+      result.value.then(value => setImmediate(run, gen, resolve, value))
     }
   }
-  run(fn())
+  return new Promise(resolve => {
+    run(fn(), resolve)
+  })
 }
 
 function sleep(secs) {
