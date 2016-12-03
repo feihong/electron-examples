@@ -11,7 +11,7 @@ let serverProcess
 main()
 
 function main() {
-  let appReady = new Promise(resolve =>  app.on('ready', resolve))
+  let appReady = new Promise(resolve => app.on('ready', resolve))
 
   coroutine(function *() {
     // If the app is ready and we've obtained an unused port.
@@ -60,7 +60,7 @@ function waitForServerStartUp(port) {
 
       let now = new Date()
       if ((now - start) > (TIMEOUT * 1000)) {
-        throw 'Server took too long to start up'
+        throw new Error('Server took too long to start up')
       }
     }
   })
@@ -78,7 +78,8 @@ function serverIsUp(port) {
       if (res.statusCode === 200) {
         resolve(true)
       } else {
-        reject(`Server returned status code ${res.statusCode}`)
+        let err = new Error(`Server returned status code ${res.statusCode}`)
+        reject(err)
       }
     }).on('error', err => {
       if (err.code === 'ECONNREFUSED') {
