@@ -26,7 +26,8 @@ function main() {
 function startServer(port) {
   console.log(`Starting server on localhost:${port}`)
   let cmd = `python server.py ${port}`
-  let options = {shell: '/bin/bash'}    // needed on Linux
+  // On Linux, we need to use bash in order to kill child processes.
+  let options = (process.platform === 'linux') ? {shell: '/bin/bash'} : {}
   serverProcess = child_process.exec(cmd, options, (err, stdout, stderr) => {
     console.log('Server process finished')
     if (err && err.signal !== 'SIGINT') {
