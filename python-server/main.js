@@ -1,5 +1,3 @@
-'use strict';
-
 const http = require('http')
 const child_process = require('child_process')
 const {app, BrowserWindow} = require('electron')
@@ -16,7 +14,14 @@ function main() {
     let values = yield Promise.all([appReady, getUnusedPort()])
     let port = values[1]
     startServer(port)
-    yield sleep(3)
+    for (let i=0; i < 10; i++) {
+      let success = yield serverIsUp(port)
+      if (success) {
+        break
+      }
+      console.log('Server is not up yet, sleeping...')
+      yield sleep(0.2)
+    }
     createWindow(port)
   })
 }
@@ -39,6 +44,27 @@ function getUnusedPort() {
     server.on('listening', () => {
       resolve(server.address().port)
       server.close()
+    })
+  })
+}
+
+function serverIsUp(port) {
+  let options = {
+    host: 'localhost',
+    port: port,
+    method: 'HEAD',
+  }
+  return new Promise((resolve, reject) => {
+    http.get(options, res => {
+      if (res.statusCode === 200) {
+        resolve(true)
+      } else {
+        reject(`Server returned status code ${res.statusCode}`)
+      }
+    }).on('error', err => {
+      if (err.code === 'ECONNREFUSED') {
+        resolve(false)
+      }
     })
   })
 }
