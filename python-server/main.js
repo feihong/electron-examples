@@ -11,18 +11,13 @@ main()
 
 function main() {
   let appReady = new Promise(resolve =>  app.on('ready', resolve))
-  let gotPort = new Promise(resolve => {
-    let server = http.createServer()
-    server.listen(0)
-    server.on('listening', () => {
-      resolve(server.address().port)
-      server.close()
-    })
-  })
 
-  gotPort.then(port => {
+  coroutine(function *() {
+    let values = yield Promise.all([appReady, getUnusedPort()])
+    let port = values[1]
     startServer(port)
-    appReady.then(() => createWindow(port))
+    yield sleep(3)
+    createWindow(port)
   })
 }
 
@@ -30,9 +25,21 @@ function startServer(port) {
   console.log(`Starting server on localhost:${port}`)
   let cmd = `python server.py ${port}`
 
-  serverProcess = child_process.exec(cmd)
-  serverProcess.on('error', err => {
-    console.log(`Error with server: ${err}`)
+  serverProcess = child_process.exec(cmd, (err, stdout, stderr) => {
+    if (err) {
+      console.log(`Server error: ${err}`);
+    }
+  })
+}
+
+function getUnusedPort() {
+  return new Promise(resolve => {
+    let server = http.createServer()
+    server.listen(0)
+    server.on('listening', () => {
+      resolve(server.address().port)
+      server.close()
+    })
   })
 }
 
@@ -53,3 +60,17 @@ function quit() {
 }
 
 app.on('window-all-closed', quit)
+
+function coroutine(fn) {
+  function run(gen, value) {
+    let result = gen.next(value)
+    if (!result.done) {
+      result.value.then(value => setImmediate(run, gen, value))
+    }
+  }
+  run(fn())
+}
+
+function sleep(secs) {
+  return new Promise(resolve => setTimeout(resolve, secs * 1000))
+}

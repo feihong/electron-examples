@@ -39,5 +39,5 @@ if __name__ == '__main__':
     app.port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
     # Simulate the case where the server may need to do a lot of initialization
     # before starting up.
-    # import time; time.sleep(1)
+    import time; time.sleep(1)
     app.run(port=app.port)
