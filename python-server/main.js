@@ -1,55 +1,102 @@
-'use strict';
-
 const http = require('http')
+const child_process = require('child_process')
 const {app, BrowserWindow} = require('electron')
 
-// Port should be the first user-specified argument.
-let port = process.argv[2]
-let url = 'http://localhost:' + port + '/'
-// We need to make a promise for the app ready event because it's likely to
-// fire before the server is ready.
-let appReady = new Promise(resolve =>  app.on('ready', resolve))
-
 let mainWindow
+let serverProcess
 
-setTimeout(checkUrlReady, 0)
+main()
 
-function checkUrlReady() {
-  let req = http.get(url, (res) => {
-    if (res.statusCode === 200) {
-      console.log('Succesfully connected')
-      createWindow()
-    } else {
-      throw 'Unable to connect to URL'
+function main() {
+  let appReady = new Promise(resolve =>  app.on('ready', resolve))
+
+  coroutine(function *() {
+    let values = yield Promise.all([appReady, getUnusedPort()])
+    let port = values[1]
+    startServer(port)
+    for (let i=0; i < 10; i++) {
+      let success = yield serverIsUp(port)
+      if (success) {
+        break
+      }
+      console.log('Server is not up yet, sleeping...')
+      yield sleep(0.2)
     }
-  }).on('error', (err) => {
-    if (err.code === 'ECONNREFUSED') {
-      console.log('Connection refused, trying again...')
-      setTimeout(checkUrlReady, 100)
-    } else {
-      throw err
+    createWindow(port)
+  })
+}
+
+function startServer(port) {
+  console.log(`Starting server on localhost:${port}`)
+  let cmd = `python server.py ${port}`
+
+  serverProcess = child_process.exec(cmd, (err, stdout, stderr) => {
+    if (err) {
+      console.log(`Server error: ${err}`);
     }
   })
 }
 
-function createWindow() {
-  appReady.then(() => {
-    mainWindow = new BrowserWindow({width: 800, height: 600})
-    mainWindow.loadURL(url)
-    mainWindow.webContents.openDevTools()
-
-    mainWindow.on('closed', () => {
-      mainWindow = null
-      quit()
+function getUnusedPort() {
+  return new Promise(resolve => {
+    let server = http.createServer()
+    server.listen(0)
+    server.on('listening', () => {
+      resolve(server.address().port)
+      server.close()
     })
   })
 }
 
-function quit() {
-  app.quit()
-  http.get(url + 'shutdown/', (res) => {
-    console.log('Shutdown response status code: ' + res.statusCode)
+function serverIsUp(port) {
+  let options = {
+    host: 'localhost',
+    port: port,
+    method: 'HEAD',
+  }
+  return new Promise((resolve, reject) => {
+    http.get(options, res => {
+      if (res.statusCode === 200) {
+        resolve(true)
+      } else {
+        reject(`Server returned status code ${res.statusCode}`)
+      }
+    }).on('error', err => {
+      if (err.code === 'ECONNREFUSED') {
+        resolve(false)
+      }
+    })
   })
 }
 
+function createWindow(port) {
+  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow.loadURL('http://localhost:' + port)
+  mainWindow.webContents.openDevTools()
+
+  mainWindow.on('closed', () => {
+    mainWindow = null
+    quit()
+  })
+}
+
+function quit() {
+  serverProcess.kill('SIGINT')
+  app.quit()
+}
+
 app.on('window-all-closed', quit)
+
+function coroutine(fn) {
+  function run(gen, value) {
+    let result = gen.next(value)
+    if (!result.done) {
+      result.value.then(value => setImmediate(run, gen, value))
+    }
+  }
+  run(fn())
+}
+
+function sleep(secs) {
+  return new Promise(resolve => setTimeout(resolve, secs * 1000))
+}

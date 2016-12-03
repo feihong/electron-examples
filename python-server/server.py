@@ -1,5 +1,5 @@
+import sys
 import subprocess
-
 from flask import Flask, request, render_template
 
 
@@ -9,13 +9,6 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html', port=app.port)
-
-
-@app.route('/shutdown/')
-def shutdown():
-    print('Server shutting down...')
-    shutdown_server()
-    return 'ok'
 
 
 @app.route('/random-text/')
@@ -43,10 +36,8 @@ def shutdown_server():
 
 
 if __name__ == '__main__':
-    port = get_unused_port()
-    proc = subprocess.Popen(['electron', 'main.js', str(port)])
-    app.port = port
+    app.port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
     # Simulate the case where the server may need to do a lot of initialization
     # before starting up.
     import time; time.sleep(1)
-    app.run(port=port)
+    app.run(port=app.port)
