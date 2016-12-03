@@ -29,12 +29,14 @@ function main() {
 function startServer(port) {
   console.log(`Starting server on localhost:${port}`)
   let cmd = `python server.py ${port}`
-
-  serverProcess = child_process.exec(cmd, (err, stdout, stderr) => {
-    if (err) {
-      console.log(`Server error: ${err}`);
+  let options = {shell: '/bin/bash'}
+  serverProcess = child_process.exec(cmd, options, (err, stdout, stderr) => {
+    console.log('Server process finished')
+    if (err && err.signal !== 'SIGINT') {
+      console.log(err)
     }
   })
+  // serverProcess.stdout.pipe(process.stdout)
 }
 
 function getUnusedPort() {
@@ -74,13 +76,11 @@ function createWindow(port) {
   mainWindow.loadURL('http://localhost:' + port)
   mainWindow.webContents.openDevTools()
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-    quit()
-  })
+  mainWindow.on('closed', quit)
 }
 
 function quit() {
+  mainWindow = null
   serverProcess.kill('SIGINT')
   app.quit()
 }
