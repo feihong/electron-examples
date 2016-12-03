@@ -11,12 +11,13 @@ function main() {
   let appReady = new Promise(resolve =>  app.on('ready', resolve))
 
   coroutine(function *() {
+    // If the app is ready and we've obtained an unused port.
     let values = yield Promise.all([appReady, getUnusedPort()])
     let port = values[1]
     startServer(port)
+    // Check up to 10 times if the server is up.
     for (let i=0; i < 10; i++) {
-      let success = yield serverIsUp(port)
-      if (success) {
+      if (yield serverIsUp(port)) {
         break
       }
       console.log('Server is not up yet, sleeping...')
@@ -29,7 +30,7 @@ function main() {
 function startServer(port) {
   console.log(`Starting server on localhost:${port}`)
   let cmd = `python server.py ${port}`
-  let options = {shell: '/bin/bash'}
+  let options = {shell: '/bin/bash'}    // needed on Linux
   serverProcess = child_process.exec(cmd, options, (err, stdout, stderr) => {
     console.log('Server process finished')
     if (err && err.signal !== 'SIGINT') {
@@ -50,6 +51,7 @@ function getUnusedPort() {
   })
 }
 
+// Make a HEAD request to see if the server is up.
 function serverIsUp(port) {
   let options = {
     host: 'localhost',
@@ -73,9 +75,8 @@ function serverIsUp(port) {
 
 function createWindow(port) {
   mainWindow = new BrowserWindow({width: 800, height: 600})
-  mainWindow.loadURL('http://localhost:' + port)
+  mainWindow.loadURL(`http://localhost:${port}`)
   mainWindow.webContents.openDevTools()
-
   mainWindow.on('closed', quit)
 }
 
@@ -87,6 +88,8 @@ function quit() {
 
 app.on('window-all-closed', quit)
 
+// Allows you to write asynchronous code in a more readable way.
+// Source: https://github.com/feihong/node-examples/blob/master/coroutine.js
 function coroutine(fn) {
   function run(gen, value) {
     let result = gen.next(value)
