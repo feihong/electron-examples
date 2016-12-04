@@ -21,14 +21,14 @@ function main() {
     // If the app is ready and we've obtained an unused port.
     let values = yield Promise.all([appReady, getUnusedPort()])
     let port = values[1]
-    startServer(port)
-    let serverIsUp = yield waitForServerStartUp(port)
+    let procInfo = startServer(port)
+    let serverIsUp = yield waitForServerStartUp(port, procInfo)
     if (serverIsUp) {
       let url = `http://localhost:${port}/`
       let title = yield getTitle(url)
       mainWindow = createWindow(url, title)
     } else {
-      mainWindow = createErrorWindow('Server took too long to start up')
+      mainWindow = createErrorWindow(procInfo)
     }
   })
 }
@@ -42,9 +42,12 @@ function startServer(port) {
     console.log('Server process finished')
     if (err && err.signal !== 'SIGINT') {
       console.log(err)
+      procInfo.failed = true
+      procInfo.errorMessage = err.message
     }
   })
-  // serverProcess.stdout.pipe(process.stdout)
+  let procInfo = {failed: false, errorMessage: null}
+  return procInfo
 }
 
 function getUnusedPort() {
@@ -58,11 +61,13 @@ function getUnusedPort() {
   })
 }
 
-function waitForServerStartUp(port) {
+function waitForServerStartUp(port, procInfo) {
   return coroutine(function *() {
     let start = new Date()
     while (true) {
-      if (yield serverIsUp(port)) {
+      if (procInfo.failed) {
+        return false
+      } else if (yield serverIsUp(port)) {
         return true
       }
       console.log('Server is not up yet, sleeping...')
@@ -123,7 +128,10 @@ function createWindow(url, title) {
   return win
 }
 
-function createErrorWindow(message) {
+function createErrorWindow(procInfo) {
+  let message = procInfo.failed ?
+    procInfo.errorMessage : 'Server took too long to start up'
+
   let options = Object.assign({title: 'Error'}, WINDOW_DIMENSIONS)
   let win = new BrowserWindow(options)
   win.loadURL('about:blank')
