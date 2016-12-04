@@ -123,8 +123,17 @@ function createWindow(url, title) {
 }
 
 function createErrorWindow(message) {
-  mainWindow = new BrowserWindow(WINDOW_DIMENSIONS)
+  let options = Object.assign({title: 'Error'}, WINDOW_DIMENSIONS)
+  mainWindow = new BrowserWindow(options)
+  mainWindow.loadURL('about:blank')
   mainWindow.on('closed', quit)
+  let contents = mainWindow.webContents
+  let code = `
+    document.body.innerHTML = '<h1>Error</h1><p></p>'
+    document.body.children[1].textContent = ${JSON.stringify(message)}`  
+  contents.on('dom-ready', () => {
+    contents.executeJavaScript(code)
+  })
 }
 
 function quit() {
