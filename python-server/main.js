@@ -1,5 +1,7 @@
 // How many seconds to wait for the server to start.
 const TIMEOUT = 2
+// Dimensions of the window.
+const WINDOW_DIMENSIONS = {width: 800, height: 600}
 
 const http = require('http')
 const child_process = require('child_process')
@@ -11,6 +13,8 @@ let serverProcess
 main()
 
 function main() {
+  app.on('window-all-closed', quit)
+
   let appReady = new Promise(resolve => app.on('ready', resolve))
 
   coroutine(function *() {
@@ -18,8 +22,12 @@ function main() {
     let values = yield Promise.all([appReady, getUnusedPort()])
     let port = values[1]
     startServer(port)
-    yield waitForServerStartUp(port)
-    createWindow(port)
+    let serverIsUp = yield waitForServerStartUp(port)
+    if (serverIsUp) {
+      createWindow(port)
+    } else {
+      createErrorWindow('Server took too long to start up')
+    }
   })
 }
 
@@ -53,14 +61,15 @@ function waitForServerStartUp(port) {
     let start = new Date()
     while (true) {
       if (yield serverIsUp(port)) {
-        break
+        return true
       }
       console.log('Server is not up yet, sleeping...')
       yield sleep(0.2)
 
       let now = new Date()
       if ((now - start) > (TIMEOUT * 1000)) {
-        throw new Error('Server took too long to start up')
+        // Server took too long to start up.
+        return false
       }
     }
   })
@@ -90,9 +99,14 @@ function serverIsUp(port) {
 }
 
 function createWindow(port) {
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow(WINDOW_DIMENSIONS)
   mainWindow.loadURL(`http://localhost:${port}`)
   mainWindow.webContents.openDevTools()
+  mainWindow.on('closed', quit)
+}
+
+function createErrorWindow(message) {
+  mainWindow = new BrowserWindow(WINDOW_DIMENSIONS)
   mainWindow.on('closed', quit)
 }
 
@@ -102,15 +116,13 @@ function quit() {
   app.quit()
 }
 
-app.on('window-all-closed', quit)
-
 // Allows you to write asynchronous code in a more readable way.
 // Source: https://github.com/feihong/node-examples/blob/master/coroutine.js
 function coroutine(fn) {
   function run(gen, resolve, value) {
     let result = gen.next(value)
     if (result.done) {
-      resolve()
+      resolve(result.value)
     } else {
       result.value.then(value => setImmediate(run, gen, resolve, value))
     }

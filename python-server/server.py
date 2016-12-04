@@ -19,22 +19,6 @@ def random_number():
     return '{} {:4d}'.format(hanzi, num)
 
 
-def get_unused_port():
-    import socket
-    s = socket.socket()
-    s.bind(('', 0))
-    result = s.getsockname()[1]
-    s.close()
-    return result
-
-
-def shutdown_server():
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
-
-
 if __name__ == '__main__':
     app.port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
     # Simulate the case where the server may need to do a lot of initialization
