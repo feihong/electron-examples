@@ -18,7 +18,7 @@ function main() {
   let appReady = new Promise(resolve => app.on('ready', resolve))
 
   coroutine(function *() {
-    // If the app is ready and we've obtained an unused port.
+    // If the app is ready AND we've obtained an unused port.
     let values = yield Promise.all([appReady, getUnusedPort()])
     let port = values[1]
     let procInfo = startServer(port)
@@ -28,7 +28,9 @@ function main() {
       let title = yield getTitle(url)
       mainWindow = createWindow(url, title)
     } else {
-      mainWindow = createErrorWindow(procInfo)
+      let message = procInfo.failed ?
+        procInfo.errorMessage : 'Server took too long to start up'
+      mainWindow = createErrorWindow(message)
     }
   })
 }
@@ -36,16 +38,18 @@ function main() {
 function startServer(port) {
   console.log(`Starting server on localhost:${port}`)
   let cmd = `python server.py ${port}`
-  // On Linux, we need to use bash in order to kill child processes.
+  // On Linux, we must use bash or we can't kill child processes.
   let options = (process.platform === 'linux') ? {shell: '/bin/bash'} : {}
   serverProcess = child_process.exec(cmd, options, (err, stdout, stderr) => {
     console.log('Server process finished')
+    // If there was an error and the parent process did not interrupt:
     if (err && err.signal !== 'SIGINT') {
       console.log(err)
       procInfo.failed = true
       procInfo.errorMessage = err.message
     }
   })
+  // Return an object that indicates whether the child process crashed.
   let procInfo = {failed: false, errorMessage: null}
   return procInfo
 }
@@ -61,12 +65,14 @@ function getUnusedPort() {
   })
 }
 
+// If the server starts up in time, return Promise{true}, otherwise
+// Promise{false}.
 function waitForServerStartUp(port, procInfo) {
   return coroutine(function *() {
     let start = new Date()
     while (true) {
       if (procInfo.failed) {
-        return false
+        return false    // child process crashed
       } else if (yield serverIsUp(port)) {
         return true
       }
@@ -82,8 +88,9 @@ function waitForServerStartUp(port, procInfo) {
   })
 }
 
-// Make a HEAD request to see if the server is up.
+// If server is up, return Promise{true}, otherwise Promise{false}.
 function serverIsUp(port) {
+  // Use HEAD request because we don't care about response body.
   let options = {
     host: 'localhost',
     port: port,
@@ -98,6 +105,7 @@ function serverIsUp(port) {
         reject(err)
       }
     }).on('error', err => {
+      // Assume that connection refused means the server is still initializing.
       if (err.code === 'ECONNREFUSED') {
         resolve(false)
       }
@@ -123,14 +131,13 @@ function createWindow(url, title) {
   let win = new BrowserWindow(options)
   win.loadURL(url)
   win.webContents.openDevTools()
+  // Show after renderer process finishes drawing.
   win.once('ready-to-show', win.show)
   win.on('closed', quit)
   return win
 }
 
-function createErrorWindow(procInfo) {
-  let message = procInfo.failed ?
-    procInfo.errorMessage : 'Server took too long to start up'
+function createErrorWindow(message) {
   let html = escapeHtml(message).replace(/\n/g, '<br>')
 
   let options = Object.assign({title: 'Error'}, WINDOW_DIMENSIONS)
