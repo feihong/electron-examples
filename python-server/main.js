@@ -26,9 +26,9 @@ function main() {
     if (serverIsUp) {
       let url = `http://localhost:${port}/`
       let title = yield getTitle(url)
-      createWindow(url, title)
+      mainWindow = createWindow(url, title)
     } else {
-      createErrorWindow('Server took too long to start up')
+      mainWindow = createErrorWindow('Server took too long to start up')
     }
   })
 }
@@ -115,25 +115,27 @@ function createWindow(url, title) {
   let options = Object.assign(
     {show: false, title: title},
     WINDOW_DIMENSIONS)
-  mainWindow = new BrowserWindow(options)
-  mainWindow.loadURL(url)
-  mainWindow.webContents.openDevTools()
-  mainWindow.once('ready-to-show', mainWindow.show)
-  mainWindow.on('closed', quit)
+  let win = new BrowserWindow(options)
+  win.loadURL(url)
+  win.webContents.openDevTools()
+  win.once('ready-to-show', win.show)
+  win.on('closed', quit)
+  return win
 }
 
 function createErrorWindow(message) {
   let options = Object.assign({title: 'Error'}, WINDOW_DIMENSIONS)
-  mainWindow = new BrowserWindow(options)
-  mainWindow.loadURL('about:blank')
-  mainWindow.on('closed', quit)
-  let contents = mainWindow.webContents
+  let win = new BrowserWindow(options)
+  win.loadURL('about:blank')
+  win.on('closed', quit)
+  let contents = win.webContents
   let code = `
     document.body.innerHTML = '<h1>Error</h1><p></p>'
-    document.body.children[1].textContent = ${JSON.stringify(message)}`  
+    document.body.children[1].textContent = ${JSON.stringify(message)}`
   contents.on('dom-ready', () => {
     contents.executeJavaScript(code)
   })
+  return win
 }
 
 function quit() {
