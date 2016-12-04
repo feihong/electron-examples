@@ -131,6 +131,7 @@ function createWindow(url, title) {
 function createErrorWindow(procInfo) {
   let message = procInfo.failed ?
     procInfo.errorMessage : 'Server took too long to start up'
+  let html = escapeHtml(message).replace(/\n/g, '<br>')
 
   let options = Object.assign({title: 'Error'}, WINDOW_DIMENSIONS)
   let win = new BrowserWindow(options)
@@ -139,7 +140,7 @@ function createErrorWindow(procInfo) {
   let contents = win.webContents
   let code = `
     document.body.innerHTML = '<h1>Error</h1><p></p>'
-    document.body.children[1].textContent = ${JSON.stringify(message)}`
+    document.body.children[1].innerHTML = ${JSON.stringify(html)}`
   contents.on('dom-ready', () => {
     contents.executeJavaScript(code)
   })
@@ -171,3 +172,13 @@ function coroutine(fn) {
 function sleep(secs) {
   return new Promise(resolve => setTimeout(resolve, secs * 1000))
 }
+
+// Source: http://stackoverflow.com/questions/6234773/can-i-escape-html-special-chars-in-javascript
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
