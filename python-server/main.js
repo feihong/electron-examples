@@ -99,9 +99,11 @@ function serverIsUp(port) {
 }
 
 function createWindow(port) {
-  mainWindow = new BrowserWindow(WINDOW_DIMENSIONS)
+  let options = Object.assign({show: false}, WINDOW_DIMENSIONS)
+  mainWindow = new BrowserWindow(options)
   mainWindow.loadURL(`http://localhost:${port}`)
   mainWindow.webContents.openDevTools()
+  mainWindow.once('ready-to-show', mainWindow.show)
   mainWindow.on('closed', quit)
 }
 
