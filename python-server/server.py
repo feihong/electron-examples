@@ -8,6 +8,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    # return 'Not found', 404
+    # return 'Massive fail', 500
+    # return 1/0
     return render_template('index.html', port=app.port)
 
 

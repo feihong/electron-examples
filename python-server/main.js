@@ -98,16 +98,13 @@ function serverIsUp(port) {
   }
   return new Promise((resolve, reject) => {
     http.get(options, res => {
-      if (res.statusCode === 200) {
-        resolve(true)
-      } else {
-        let err = new Error(`Server returned status code ${res.statusCode}`)
-        reject(err)
-      }
+      resolve(true)
     }).on('error', err => {
       // Assume that connection refused means the server is still initializing.
       if (err.code === 'ECONNREFUSED') {
         resolve(false)
+      } else {
+        throw err
       }
     })
   })
