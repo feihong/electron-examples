@@ -24,7 +24,9 @@ function main() {
     startServer(port)
     let serverIsUp = yield waitForServerStartUp(port)
     if (serverIsUp) {
-      createWindow(port)
+      let url = `http://localhost:${port}/`
+      let title = yield getTitle(url)
+      createWindow(url, title)
     } else {
       createErrorWindow('Server took too long to start up')
     }
@@ -98,10 +100,23 @@ function serverIsUp(port) {
   })
 }
 
-function createWindow(port) {
-  let options = Object.assign({show: false}, WINDOW_DIMENSIONS)
+function getTitle(url) {
+  return new Promise(resolve => {
+    http.get(url + 'title/', res => {
+      res.on('readable', () => {
+        res.setEncoding('utf8')
+        resolve(res.read())
+      })
+    })
+  })
+}
+
+function createWindow(url, title) {
+  let options = Object.assign(
+    {show: false, title: title},
+    WINDOW_DIMENSIONS)
   mainWindow = new BrowserWindow(options)
-  mainWindow.loadURL(`http://localhost:${port}`)
+  mainWindow.loadURL(url)
   mainWindow.webContents.openDevTools()
   mainWindow.once('ready-to-show', mainWindow.show)
   mainWindow.on('closed', quit)
