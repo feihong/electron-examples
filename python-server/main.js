@@ -1,3 +1,4 @@
+const TITLE = 'Python Server App Example'
 // How many seconds to wait for the server to start.
 const TIMEOUT = 2
 // Dimensions of the window.
@@ -25,8 +26,7 @@ function main() {
     let serverIsUp = yield waitForServerStartUp(port, procInfo)
     if (serverIsUp) {
       let url = `http://localhost:${port}/`
-      let title = yield getTitle(url)
-      mainWindow = createWindow(url, title)
+      mainWindow = createWindow(url, TITLE)
     } else {
       let message = procInfo.failed ?
         procInfo.errorMessage : 'Server took too long to start up'
@@ -109,17 +109,6 @@ function serverIsUp(port) {
       if (err.code === 'ECONNREFUSED') {
         resolve(false)
       }
-    })
-  })
-}
-
-function getTitle(url) {
-  return new Promise(resolve => {
-    http.get(url + 'title/', res => {
-      res.on('readable', () => {
-        res.setEncoding('utf8')
-        resolve(res.read())
-      })
     })
   })
 }

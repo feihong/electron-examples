@@ -11,11 +11,6 @@ def index():
     return render_template('index.html', port=app.port)
 
 
-@app.route('/title/')
-def title():
-    return 'Python Server App Example'
-
-
 @app.route('/random-text/')
 def random_number():
     import random
