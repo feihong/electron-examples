@@ -3,16 +3,33 @@
 <head>
   <meta charset='utf-8'>
   <title>Vue.js</title>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.4/vue.min.js'></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src='https://unpkg.com/vue/dist/vue.js'></script>
+  <script src='https://unpkg.com/vue-router'></script>
 </head>
-<body>
+<body class='container'>
 
 <h1>Vue.js</h1>
 
 <div id='app'>
-  {{ message }}
+  <p>
+    <router-link to='/foo'>Go to Foo</router-link>
+    <router-link to='/bar'>Go to Bar</router-link>
+  </p>
+
+  <router-view></router-view>
 </div>
 
+<script type='text/x-template' id='foo-template'>
+  <i>Foo</i>
+</script>
+
+<script type='text/x-template' id='bar-template'>
+  <b>Bar</b>
+</script>
+
+<script src='http://code.jquery.com/jquery-3.1.1.min.js'></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src='page.js'></script>
 </body>
 </html>
