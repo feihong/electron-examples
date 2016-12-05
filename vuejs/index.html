@@ -3,7 +3,8 @@
 <head>
   <meta charset='utf-8'>
   <title>Vue.js</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+  <link rel='stylesheet' href='styles.css'>
   <script src='https://unpkg.com/vue/dist/vue.js'></script>
   <script src='https://unpkg.com/vue-router'></script>
 </head>
@@ -13,23 +14,51 @@
 
 <div id='app'>
   <p>
-    <router-link to='/foo'>Go to Foo</router-link>
-    <router-link to='/bar'>Go to Bar</router-link>
+    <router-link to='/'>Main</router-link>
+    <router-link to='/proxies'>Proxies</router-link>
   </p>
 
   <router-view></router-view>
 </div>
 
-<script type='text/x-template' id='foo-template'>
-  <i>Foo</i>
+<script type='text/x-template' id='main-template'>
+  <div>
+    <div class='row button-row'>
+      <div class='col-xs-12'>
+        <button class='btn btn-primary btn-block'>Start proxy</button>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-xs-6'>IP address:</div>
+      <div class='col-xs-6'>{{ address }}</div>
+    </div>
+    <div class='row'>
+      <div class='col-xs-6'>Proxy IP address:</div>
+      <div class='col-xs-6'>{{ proxyAddress }}</div>
+    </div>
+  </div>
 </script>
 
-<script type='text/x-template' id='bar-template'>
-  <b>Bar</b>
+<script type='text/x-template' id='proxies-template'>
+  <div>
+    <div class='row'>
+      <div class='col-xs-12 select-col'>
+        <span>Current proxy:</span>
+        <select>
+          <option v-for='proxy in proxies' :value='proxy'>{{ proxy }}</option>
+        </select>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-xs-6'>
+        <button class='btn btn-default'>Edit...</button>
+      </div>
+    </div>
+  </div>
 </script>
 
 <script src='http://code.jquery.com/jquery-3.1.1.min.js'></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
 <script src='page.js'></script>
 </body>
 </html>
