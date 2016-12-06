@@ -75,6 +75,7 @@
 
 <script type='text/x-template' id='edit-proxies-template'>
   <div class='vbox'>
+    <h4>Edit proxies</h4>
     <div class='hbox bottom-space'>
       <router-link to='/proxies' class='btn btn-default right-space' exact>Back</router-link>
       <a class='btn btn-default'>Add Proxy...</a>
@@ -88,7 +89,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for='proxy in proxies'>
+        <tr v-for='proxy in proxies' :class='{active: currentProxy.name === proxy.name}'>
           <td>
             {{ proxy.name }}
             <span v-if='currentProxy.name === proxy.name'>(current)</span>
