@@ -7,9 +7,14 @@
   flex-direction: row;
 }
 .dropdown {
-  margin-bottom: 1rem;
-  flex: 1;                                          
+  flex: 1;
 }
 .nav-tabs {
   margin-bottom: 2rem;
+}
+.bottom-space {
+  margin-bottom: 1rem;
+}
+.right-space {
+  margin-right: 1rem;
 }

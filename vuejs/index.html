@@ -32,7 +32,7 @@
 
 <script type='text/x-template' id='main-template'>
   <div class='vbox'>
-    <div>
+    <div class='bottom-space'>
       <button class='btn btn-primary btn-block'>Start proxy</button>
     </div>
     <table class='table table-bordered'>
@@ -52,22 +52,22 @@
 
 <script type='text/x-template' id='proxies-template'>
   <div class='vbox'>
-    <div class='hbox'>
-      <div>Current proxy:</div>
+    <div class='hbox bottom-space' style='align-items: center;'>
+      <div class='right-space'>Current proxy:</div>
       <div class='dropdown'>
-        <button class="btn btn-default dropdown-toggle">
+        <button class="btn btn-default dropdown-toggle" data-toggle='dropdown'>
           {{ proxy }}
           <span class="caret"></span>
         </button>
         <ul class='dropdown-menu'>
           <li v-for='proxy in proxies'>
-            <a href='#'>{{ proxy }}</a>
-          </li>                                                                                                                                                                                                                                                                                                           
+            <a>{{ proxy }}</a>
+          </li>
         </ul>
       </div>
     </div>
     <div>
-      <button class='btn btn-default btn-block'>Edit proxies...</button>
+      <button class='btn btn-default'>Edit proxies...</button>
     </div>
   </div>
 </script>
