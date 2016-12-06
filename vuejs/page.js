@@ -53,9 +53,28 @@ const ChooseProxy = {
   }
 }
 
+const EditProxies = {
+  template: '#edit-proxies-template',
+  computed: {
+    currentProxy() {
+      return this.$store.state.currentProxy
+    },
+    proxies() {
+      return this.$store.state.proxies
+    },
+  },
+  methods: {
+    deleteProxy(name) {
+      let proxy = this.$store.state.proxies.find(x => x.name === name)
+      this.$store.commit('deleteProxy', proxy)
+    }
+  }
+}
+
 const routes = [
   { path: '/', component: Main },
-  { path: '/proxies', component: ChooseProxy }
+  { path: '/proxies', component: ChooseProxy },
+  { path: '/proxies/edit', component: EditProxies },
 ]
 
 const router = new VueRouter({

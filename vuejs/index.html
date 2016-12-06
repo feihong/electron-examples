@@ -68,8 +68,40 @@
       </div>
     </div>
     <div>
-      <button class='btn btn-default'>Edit proxies...</button>
+      <router-link to='/proxies/edit' class='btn btn-default'>Edit proxies...</router-link>
     </div>
+  </div>
+</script>
+
+<script type='text/x-template' id='edit-proxies-template'>
+  <div class='vbox'>
+    <div class='hbox bottom-space'>
+      <router-link to='/proxies' class='btn btn-default right-space' exact>Back</router-link>
+      <a class='btn btn-default'>Add Proxy...</a>
+    </div>
+    <table class='table table-bordered'>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>URL/Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for='proxy in proxies'>
+          <td>
+            {{ proxy.name }}
+            <span v-if='currentProxy.name === proxy.name'>(current)</span>
+          </td>
+          <td>{{ proxy.addr }}</td>
+          <td>
+            <span class='glyphicon glyphicon-edit'></span>
+            &nbsp;
+            <span @click='deleteProxy(proxy.name)' class='glyphicon glyphicon-trash'></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </script>
 
