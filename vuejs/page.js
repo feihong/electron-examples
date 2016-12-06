@@ -1,4 +1,4 @@
-const proxies = ['a', 'b', 'c']
+const proxies = ['anaconda', 'bananarama', 'cornucopia']
 
 
 const Foo = {

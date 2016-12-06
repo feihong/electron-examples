@@ -1,4 +1,12 @@
-.button-row, .select-col {
+.vbox {
+  display: flex;
+  flex-direction: column;
+}
+.hbox {
+  display: flex;
+  flex-direction: row;
+}
+.btn-block, .button-row, .select-col {
   margin-bottom: 2rem;
 }
 .select-col {

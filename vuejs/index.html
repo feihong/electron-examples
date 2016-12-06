@@ -5,6 +5,12 @@
   <title>Vue.js</title>
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
   <link rel='stylesheet' href='styles.css'>
+
+  <script>
+  // vue-router expects module and process to be defined
+  if (typeof module === 'undefined') module = {}
+  if (typeof process === 'undefined') process = {env: {}}
+  </script>
   <script src='https://unpkg.com/vue/dist/vue.js'></script>
   <script src='https://unpkg.com/vue-router'></script>
 </head>
@@ -25,19 +31,17 @@
 </div>
 
 <script type='text/x-template' id='main-template'>
-  <div>
-    <div class='row button-row'>
-      <div class='col-xs-12'>
-        <button class='btn btn-primary btn-block'>Start proxy</button>
-      </div>
+  <div class='vbox'>
+    <div>
+      <button class='btn btn-primary btn-block'>Start proxy</button>
     </div>
-    <div class='row'>
-      <div class='col-xs-6'>IP address:</div>
-      <div class='col-xs-6'>{{ address }}</div>
+    <div class='hbox'>
+      <div>IP address:</div>
+      <div>{{ address }}</div>
     </div>
-    <div class='row'>
-      <div class='col-xs-6'>Proxy IP address:</div>
-      <div class='col-xs-6'>{{ proxyAddress }}</div>
+    <div class='hbox'>
+      <div>Proxy IP address:</div>
+      <div>{{ proxyAddress }}</div>
     </div>
   </div>
 </script>
@@ -54,7 +58,7 @@
     </div>
     <div class='row'>
       <div class='col-xs-6'>
-        <button class='btn btn-default'>Edit...</button>
+        <button class='btn btn-default'>Edit proxies...</button>
       </div>
     </div>
   </div>
