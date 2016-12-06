@@ -10,19 +10,25 @@ const Main = {
     }
   }
 }
-const Proxies = {
+
+const ChooseProxy = {
   template: '#proxies-template',
   data() {
     return {
       proxy: proxies[0],
       proxies: proxies,
     }
+  },
+  methods: {
+    choseProxy(evt) {
+      this.proxy = evt.target.textContent
+    }
   }
 }
 
 const routes = [
   { path: '/', component: Main },
-  { path: '/proxies', component: Proxies }
+  { path: '/proxies', component: ChooseProxy }
 ]
 
 const router = new VueRouter({

@@ -61,7 +61,7 @@
         </button>
         <ul class='dropdown-menu'>
           <li v-for='proxy in proxies'>
-            <a>{{ proxy }}</a>
+            <a @click='choseProxy'>{{ proxy }}</a>
           </li>
         </ul>
       </div>
