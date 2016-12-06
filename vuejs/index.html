@@ -13,6 +13,7 @@
   </script>
   <script src='https://unpkg.com/vue/dist/vue.js'></script>
   <script src='https://unpkg.com/vue-router'></script>
+  <script src='https://unpkg.com/vuex'></script>
 </head>
 <body class='container'>
 
@@ -55,13 +56,13 @@
     <div class='hbox bottom-space' style='align-items: center;'>
       <div class='right-space'>Current proxy:</div>
       <div class='dropdown'>
-        <button class="btn btn-default dropdown-toggle" data-toggle='dropdown'>
-          {{ proxy }}
-          <span class="caret"></span>
+        <button class='btn btn-default dropdown-toggle' data-toggle='dropdown'>
+          {{ currentProxy.name }}
+          <span class='caret'></span>
         </button>
         <ul class='dropdown-menu'>
           <li v-for='proxy in proxies'>
-            <a @click='choseProxy'>{{ proxy }}</a>
+            <a @click='choseProxy'>{{ proxy.name }}</a>
           </li>
         </ul>
       </div>

@@ -1,5 +1,28 @@
-const proxies = ['anaconda', 'bananarama', 'cornucopia']
+const proxies = [
+  {name: 'Anaconda', addr: '111.111.111.111'},
+  {name: 'Bananarama', addr: '222.222.222.222'},
+  {name: 'Cornucopia', addr: '333.333.333.333'},
+]
 
+
+const store = new Vuex.Store({
+  state: {
+    currentProxy: proxies[0],
+    proxies: proxies,
+  },
+  mutations: {
+    setCurrentProxy(state, proxy) {
+      state.currentProxy = proxy
+    },
+    addProxy(state, proxy) {
+      state.proxies.push(proxy)
+    },
+    deleteProxy(state, proxy) {
+      let delIndex = state.proxies.indexOf(proxy)
+      state.proxies.splice(delIndex, 1)
+    },
+  }
+})
 
 const Main = {
   template: '#main-template',
@@ -13,15 +36,19 @@ const Main = {
 
 const ChooseProxy = {
   template: '#proxies-template',
-  data() {
-    return {
-      proxy: proxies[0],
-      proxies: proxies,
-    }
+  computed: {
+    currentProxy() {
+      return this.$store.state.currentProxy
+    },
+    proxies() {
+      return this.$store.state.proxies
+    },
   },
   methods: {
     choseProxy(evt) {
-      this.proxy = evt.target.textContent
+      let name = evt.target.textContent
+      let proxy = this.$store.state.proxies.find(x => x.name === name)
+      this.$store.commit('setCurrentProxy', proxy)
     }
   }
 }
@@ -37,5 +64,6 @@ const router = new VueRouter({
 })
 
 const app = new Vue({
-  router
+  router,
+  store,
 }).$mount('#app')
