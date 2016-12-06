@@ -10,3 +10,6 @@
 .select-col select {
   flex: 1;
 }
+.nav-tabs {
+  margin-bottom: 2rem;
+}

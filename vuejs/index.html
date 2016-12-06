@@ -13,11 +13,14 @@
 <h1>Vue.js</h1>
 
 <div id='app'>
-  <p>
-    <router-link to='/'>Main</router-link>
-    <router-link to='/proxies'>Proxies</router-link>
-  </p>
-
+  <ul class='nav nav-tabs'>
+    <router-link to='/' tag='li' exact>
+      <a>Main</a>
+    </router-link>
+    <router-link to='/proxies' tag='li'>
+      <a>Proxies</a>
+    </router-link>
+  </ul>
   <router-view></router-view>
 </div>
 
