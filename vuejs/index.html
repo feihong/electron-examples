@@ -35,31 +35,39 @@
     <div>
       <button class='btn btn-primary btn-block'>Start proxy</button>
     </div>
-    <div class='hbox'>
-      <div>IP address:</div>
-      <div>{{ address }}</div>
-    </div>
-    <div class='hbox'>
-      <div>Proxy IP address:</div>
-      <div>{{ proxyAddress }}</div>
-    </div>
+    <table class='table table-bordered'>
+      <tbody>
+        <tr>
+          <td>IP address:</td>
+          <td>{{ address }}</td>
+        </tr>
+        <tr>
+          <td>Proxy IP address:</td>
+          <td>{{ proxyAddress }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </script>
 
 <script type='text/x-template' id='proxies-template'>
-  <div>
-    <div class='row'>
-      <div class='col-xs-12 select-col'>
-        <span>Current proxy:</span>
-        <select>
-          <option v-for='proxy in proxies' :value='proxy'>{{ proxy }}</option>
-        </select>
+  <div class='vbox'>
+    <div class='hbox'>
+      <div>Current proxy:</div>
+      <div class='dropdown'>
+        <button class="btn btn-default dropdown-toggle">
+          {{ proxy }}
+          <span class="caret"></span>
+        </button>
+        <ul class='dropdown-menu'>
+          <li v-for='proxy in proxies'>
+            <a href='#'>{{ proxy }}</a>
+          </li>                                                                                                                                                                                                                                                                                                           
+        </ul>
       </div>
     </div>
-    <div class='row'>
-      <div class='col-xs-6'>
-        <button class='btn btn-default'>Edit proxies...</button>
-      </div>
+    <div>
+      <button class='btn btn-default btn-block'>Edit proxies...</button>
     </div>
   </div>
 </script>

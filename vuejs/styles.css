@@ -6,17 +6,9 @@
   display: flex;
   flex-direction: row;
 }
-.btn-block, .button-row, .select-col {
-  margin-bottom: 2rem;
-}
-.select-col {
-  display: flex;
-}
-.select-col span {
-  margin-right: 1rem;
-}
-.select-col select {
-  flex: 1;
+.dropdown {
+  margin-bottom: 1rem;
+  flex: 1;                                          
 }
 .nav-tabs {
   margin-bottom: 2rem;

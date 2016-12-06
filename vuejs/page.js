@@ -1,7 +1,7 @@
 const proxies = ['anaconda', 'bananarama', 'cornucopia']
 
 
-const Foo = {
+const Main = {
   template: '#main-template',
   data() {
     return {
@@ -10,18 +10,19 @@ const Foo = {
     }
   }
 }
-const Bar = {
+const Proxies = {
   template: '#proxies-template',
   data() {
     return {
-      proxies: proxies
+      proxy: proxies[0],
+      proxies: proxies,
     }
   }
 }
 
 const routes = [
-  { path: '/', component: Foo },
-  { path: '/proxies', component: Bar }
+  { path: '/', component: Main },
+  { path: '/proxies', component: Proxies }
 ]
 
 const router = new VueRouter({
