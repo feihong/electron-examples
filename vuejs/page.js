@@ -1,14 +1,15 @@
-const proxies = [
+const PROXIES = [
   {name: 'Anaconda', addr: '111.111.111.111'},
   {name: 'Bananarama', addr: '222.222.222.222'},
+  {name: 'Dark Knight', addr: '444.444.444.444'},
   {name: 'Cornucopia', addr: '333.333.333.333'},
 ]
 
 
 const store = new Vuex.Store({
   state: {
-    currentProxy: proxies[0],
-    proxies: proxies,
+    currentProxy: PROXIES[0],
+    proxies: PROXIES,
   },
   mutations: {
     setCurrentProxy(state, proxy) {
@@ -45,9 +46,7 @@ const ChooseProxy = {
     },
   },
   methods: {
-    choseProxy(evt) {
-      let name = evt.target.textContent
-      let proxy = this.$store.state.proxies.find(x => x.name === name)
+    choseProxy(proxy) {
       this.$store.commit('setCurrentProxy', proxy)
     }
   }
@@ -56,17 +55,34 @@ const ChooseProxy = {
 const EditProxies = {
   template: '#edit-proxies-template',
   computed: {
-    currentProxy() {
-      return this.$store.state.currentProxy
-    },
     proxies() {
       return this.$store.state.proxies
     },
   },
   methods: {
-    deleteProxy(name) {
-      let proxy = this.$store.state.proxies.find(x => x.name === name)
+    isCurrentProxy(proxy) {
+      return this.$store.state.currentProxy === proxy
+    },
+    deleteProxy(proxy) {
       this.$store.commit('deleteProxy', proxy)
+    }
+  }
+}
+
+const EditProxy = {
+  template: '#edit-proxy-template',
+  data() {
+    return {name: '', addr: ''}
+  },
+  computed: {
+    title() {
+      return 'Add Proxy'
+    }
+  },
+  methods: {
+    submit() {
+      let proxy = {name: this.state.name, addr: this.state.addr}
+      this.$store.commit('addProxy', proxy)
     }
   }
 }
@@ -75,6 +91,8 @@ const routes = [
   { path: '/', component: Main },
   { path: '/proxies', component: ChooseProxy },
   { path: '/proxies/edit', component: EditProxies },
+  { path: '/proxies/add', component: EditProxy },
+  { path: '/proxies/:index/edit', component: EditProxy },
 ]
 
 const router = new VueRouter({

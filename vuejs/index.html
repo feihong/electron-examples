@@ -62,7 +62,7 @@
         </button>
         <ul class='dropdown-menu'>
           <li v-for='proxy in proxies'>
-            <a @click='choseProxy'>{{ proxy.name }}</a>
+            <a @click='choseProxy(proxy)'>{{ proxy.name }}</a>
           </li>
         </ul>
       </div>
@@ -78,7 +78,7 @@
     <h4>Edit proxies</h4>
     <div class='hbox bottom-space'>
       <router-link to='/proxies' class='btn btn-default right-space' exact>Back</router-link>
-      <a class='btn btn-default'>Add Proxy...</a>
+      <router-link to='/proxies/add' class='btn btn-default'>Add Proxy...</router-link>
     </div>
     <table class='table table-bordered'>
       <thead>
@@ -89,20 +89,42 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for='proxy in proxies' :class='{active: currentProxy.name === proxy.name}'>
+        <tr v-for='proxy in proxies' :class='{active: isCurrentProxy(proxy)}'>
           <td>
             {{ proxy.name }}
-            <span v-if='currentProxy.name === proxy.name'>(current)</span>
+            <span v-if='isCurrentProxy(proxy)'>(current)</span>
           </td>
           <td>{{ proxy.addr }}</td>
           <td>
-            <span class='glyphicon glyphicon-edit'></span>
+            <router-link :to='`/proxies/${proxy.name}/edit`'>
+              <span class='glyphicon glyphicon-edit'></span>
+            </router-link>
             &nbsp;
-            <span @click='deleteProxy(proxy.name)' class='glyphicon glyphicon-trash'></span>
+            <a>
+              <span @click='deleteProxy(proxy)' class='glyphicon glyphicon-trash'></span>
+            </a>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
+</script>
+
+<script type='text/x-template' id='edit-proxy-template'>
+  <div class='vbox'>
+    <h4>{{ title }}</h4>
+    <div class='form-group'>
+      <label for='proxy-name'>Name</label>
+      <input class='form-control' id='proxy-name' v-model='name'>
+    </div>
+    <div class='form-group'>
+      <label for='proxy-addr'>Address</label>
+      <input class='form-control' id='proxy-addr' v-model='addr'>
+    </div>
+    <div class='hbox'>
+      <router-link to='/proxies/edit' class='btn btn-default right-space'>Cancel</router-link>
+      <a class='btn btn-default btn-primary'>Submit</a>
+    </div>
   </div>
 </script>
 
