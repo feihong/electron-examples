@@ -75,9 +75,13 @@
 
 <script type='text/x-template' id='edit-proxies-template'>
   <div class='vbox'>
-    <h4>Edit proxies</h4>
+    <ol class='breadcrumb'>
+      <li>
+        <router-link to='/proxies'>Proxies</router-link>
+      </li>
+      <li class='active'>Edit Proxies</li>
+    </ol>
     <div class='hbox bottom-space'>
-      <router-link to='/proxies' class='btn btn-default right-space' exact>Back</router-link>
       <router-link to='/proxies/add' class='btn btn-default'>Add Proxy...</router-link>
     </div>
     <table class='table table-bordered'>
@@ -112,7 +116,15 @@
 
 <script type='text/x-template' id='edit-proxy-template'>
   <div class='vbox'>
-    <h4>{{ title }}</h4>
+    <ol class='breadcrumb'>
+      <li>
+        <router-link to='/proxies'>Proxies</router-link>
+      </li>
+      <li>
+        <router-link to='/proxies/edit'>Edit Proxies</a>
+      </li>
+      <li class='active'>{{ title }}</li>
+    </ol>
     <div class='form-group'>
       <label for='proxy-name'>Name</label>
       <input class='form-control' id='proxy-name' v-model='name'>
@@ -121,8 +133,7 @@
       <label for='proxy-addr'>Address</label>
       <input class='form-control' id='proxy-addr' v-model='addr'>
     </div>
-    <div class='hbox'>
-      <router-link to='/proxies/edit' class='btn btn-default right-space'>Cancel</router-link>
+    <div>
       <a class='btn btn-default btn-primary' @click='submit'>Submit</a>
     </div>
   </div>
