@@ -18,6 +18,12 @@ const store = new Vuex.Store({
     addProxy(state, proxy) {
       state.proxies.push(proxy)
     },
+    editProxy(state, payload) {
+      // let index = state.proxies.indexOf(payload.proxy)
+      // Vue.set(state.proxies, index, payload.values)
+      payload.proxy.name = payload.values.name
+      payload.proxy.addr = payload.values.addr
+    },
     deleteProxy(state, proxy) {
       let delIndex = state.proxies.indexOf(proxy)
       state.proxies.splice(delIndex, 1)
@@ -72,17 +78,30 @@ const EditProxies = {
 const EditProxy = {
   template: '#edit-proxy-template',
   data() {
-    return {name: '', addr: ''}
+    return {proxy: null, title: '', name: '', addr: ''}
   },
-  computed: {
-    title() {
-      return 'Add Proxy'
+  created() {
+    let name = this.$route.params.name
+    if (name !== undefined) {
+      let proxy = this.$store.state.proxies.find(x => x.name === name)
+      this.proxy = proxy
+      this.title = `Editing Proxy "${proxy.name}"`
+      this.name = proxy.name
+      this.addr = proxy.addr
+    } else {
+      this.proxy = null
+      this.title = 'Add New Proxy'
     }
   },
   methods: {
     submit() {
-      let proxy = {name: this.state.name, addr: this.state.addr}
-      this.$store.commit('addProxy', proxy)
+      let values = {name: this.name, addr: this.addr}
+      if (this.proxy === null) {
+        this.$store.commit('addProxy', values)
+      } else {
+        this.$store.commit('editProxy', {proxy: this.proxy, values})
+      }
+      this.$router.go(-1)
     }
   }
 }
@@ -92,7 +111,7 @@ const routes = [
   { path: '/proxies', component: ChooseProxy },
   { path: '/proxies/edit', component: EditProxies },
   { path: '/proxies/add', component: EditProxy },
-  { path: '/proxies/:index/edit', component: EditProxy },
+  { path: '/proxies/:name/edit', component: EditProxy },
 ]
 
 const router = new VueRouter({
