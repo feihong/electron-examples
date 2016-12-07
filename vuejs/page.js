@@ -48,7 +48,8 @@ const ChooseProxy = {
       return this.$store.state.currentProxy
     },
     proxies() {
-      return this.$store.state.proxies
+      return [...this.$store.state.proxies].sort(
+        (a, b) => a.name.localeCompare(b.name))
     },
   },
   methods: {
@@ -62,7 +63,8 @@ const EditProxies = {
   template: '#edit-proxies-template',
   computed: {
     proxies() {
-      return this.$store.state.proxies
+      return [...this.$store.state.proxies].sort(
+        (a, b) => a.name.localeCompare(b.name))
     },
   },
   methods: {
