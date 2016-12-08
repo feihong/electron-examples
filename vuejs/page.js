@@ -48,8 +48,7 @@ const ChooseProxy = {
       return this.$store.state.currentProxy
     },
     proxies() {
-      return [...this.$store.state.proxies].sort(
-        (a, b) => a.name.localeCompare(b.name))
+      return this.$store.state.proxies
     },
   },
   methods: {
@@ -63,8 +62,7 @@ const EditProxies = {
   template: '#edit-proxies-template',
   computed: {
     proxies() {
-      return [...this.$store.state.proxies].sort(
-        (a, b) => a.name.localeCompare(b.name))
+      return this.$store.state.proxies
     },
   },
   methods: {
@@ -101,18 +99,23 @@ const EditProxy = {
       this.title = 'Add New Proxy'
     }
   },
-  computed: {
-    hasErrors() {
-      return Object.keys(this.errors).length > 0
-    }
-  },
   methods: {
+    hasError(name) {
+      return name in this.errors
+    },
     submit() {
       if (this.name === '') {
-        errors.name = 'Name must not be blank'
+        Vue.set(this.errors, 'name', 'Name must not be blank')
+      } else {
+        Vue.delete(this.errors, 'name')
       }
       if (this.addr === '') {
-        errors.addr = 'Address must not be blank'
+        Vue.set(this.errors, 'addr', 'Address must not be blank')
+      } else {
+        Vue.delete(this.errors, 'addr')
+      }
+      if (Object.keys(this.errors).length > 0) {
+        return
       }
 
       let values = {name: this.name, addr: this.addr}
