@@ -17,7 +17,6 @@
   <script src='https://unpkg.com/vue/dist/vue.js'></script>
   <script src='https://unpkg.com/vuex'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.1.1/vue-router.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue-focus/2.1.0/vue-focus.js'></script>
 </head>
 <body class='container'>
 
@@ -131,7 +130,7 @@
     </ol>
     <div class='form-group' :class="{'has-error': hasError('name')}">
       <label class='control-label' for='proxy-name'>Name</label>
-      <input class='form-control' id='proxy-name' v-model.trim='name'>
+      <input class='form-control' id='proxy-name' v-model.trim='name' ref='nameInput'>
       <p class='text-danger' v-if="hasError('name')">{{ errors.name }}</p>
     </div>
     <div class='form-group' :class="{'has-error': hasError('addr')}">

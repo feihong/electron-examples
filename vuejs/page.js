@@ -99,6 +99,9 @@ const EditProxy = {
       this.title = 'Add New Proxy'
     }
   },
+  mounted() {
+    this.$refs.nameInput.focus()
+  },
   methods: {
     hasError(name) {
       return name in this.errors
@@ -117,7 +120,7 @@ const EditProxy = {
       }
       if (this.addr === '') {
         Vue.set(this.errors, 'addr', 'Address must not be blank')
-      } 
+      }
       if (Object.keys(this.errors).length > 0) {
         return
       }
