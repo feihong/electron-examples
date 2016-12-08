@@ -39,6 +39,12 @@ const Main = {
       address: '123.0.0.1',
       proxyAddress: '456.0.0.1',
     }
+  },
+  mounted() {
+    $(this.$refs.modal).on('shown.bs.modal', () => {
+      this.$refs.portInput.select()
+      this.$refs.portInput.focus()
+    })
   }
 }
 

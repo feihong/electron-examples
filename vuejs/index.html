@@ -46,7 +46,7 @@
           <td>
             {{ port }}
             &nbsp;
-            <a><span class='glyphicon glyphicon-edit'></span></a>
+            <a data-toggle='modal' data-target='#local-port-modal'><span class='glyphicon glyphicon-edit'></span></a>
           </td>
         </tr>
         <tr>
@@ -59,6 +59,29 @@
         </tr>
       </tbody>
     </table>
+
+    <div class='modal fade' id='local-port-modal' ref='modal'>
+      <div class='modal-dialog'>
+        <div class='modal-content'>
+          <div class='modal-header'>
+            <button class='close' data-dismiss='modal'>
+              <span>&times;</span>
+            </button>
+            <h4 class='modal-title'>Change local port</h4>
+          </div>
+          <div class='modal-body'>
+            <div class='form-group has-error'>
+              <input class='form-control' :value='port' ref='portInput'>
+              <p class='text-danger'>Port must be a number</p>
+            </div>
+          </div>
+          <div class='modal-footer'>
+            <button class='btn btn-default' data-dismiss='modal'>Cancel</button>
+            <button class='btn btn-primary'>Save</button>
+          </div>
+        </div> <!-- /.modal-content -->
+      </div> <!-- /.modal-dialog -->
+    </div> <!-- /.modal -->
   </div>
 </script>
 
@@ -147,8 +170,8 @@
         <input class='form-control' id='proxy-addr' v-model.trim='addr'>
         <p class='text-danger' v-if="hasError('addr')">{{ errors.addr }}</p>
       </div>
-      <div>        
-        <button class='btn btn-default btn-primary'>Submit</a>
+      <div>
+        <button class='btn btn-default btn-primary'>Save</a>
       </div>
     </form>
   </div>
