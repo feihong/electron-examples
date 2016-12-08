@@ -103,9 +103,18 @@ const EditProxy = {
     hasError(name) {
       return name in this.errors
     },
+    nameIsAlreadyUsed(proxy, name) {
+      return this.$store.state.proxies.some(
+        x => x.name.toLowerCase() === name.toLowerCase() && proxy !== x)
+    },
     submit() {
       if (this.name === '') {
         Vue.set(this.errors, 'name', 'Name must not be blank')
+      } else {
+        Vue.delete(this.errors, 'name')
+      }
+      if (this.nameIsAlreadyUsed(this.proxy, this.name)) {
+        Vue.set(this.errors, 'name', 'Name is already used')
       } else {
         Vue.delete(this.errors, 'name')
       }
