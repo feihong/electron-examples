@@ -35,6 +35,7 @@ const Main = {
   template: '#main-template',
   data() {
     return {
+      port: '15600',
       address: '123.0.0.1',
       proxyAddress: '456.0.0.1',
     }
