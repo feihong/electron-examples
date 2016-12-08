@@ -80,7 +80,13 @@ const EditProxies = {
 const EditProxy = {
   template: '#edit-proxy-template',
   data() {
-    return {proxy: null, title: '', name: '', addr: ''}
+    return {
+      proxy: null,
+      errors: {},
+      title: '',
+      name: '',
+      addr: ''
+    }
   },
   created() {
     let name = this.$route.params.name
@@ -95,8 +101,20 @@ const EditProxy = {
       this.title = 'Add New Proxy'
     }
   },
+  computed: {
+    hasErrors() {
+      return Object.keys(this.errors).length > 0
+    }
+  },
   methods: {
     submit() {
+      if (this.name === '') {
+        errors.name = 'Name must not be blank'
+      }
+      if (this.addr === '') {
+        errors.addr = 'Address must not be blank'
+      }
+
       let values = {name: this.name, addr: this.addr}
       if (this.proxy === null) {
         this.$store.commit('addProxy', values)
