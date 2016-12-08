@@ -108,21 +108,16 @@ const EditProxy = {
         x => x.name.toLowerCase() === name.toLowerCase() && proxy !== x)
     },
     submit() {
+      this.errors = {}
       if (this.name === '') {
         Vue.set(this.errors, 'name', 'Name must not be blank')
-      } else {
-        Vue.delete(this.errors, 'name')
       }
       if (this.nameIsAlreadyUsed(this.proxy, this.name)) {
         Vue.set(this.errors, 'name', 'Name is already used')
-      } else {
-        Vue.delete(this.errors, 'name')
       }
       if (this.addr === '') {
         Vue.set(this.errors, 'addr', 'Address must not be blank')
-      } else {
-        Vue.delete(this.errors, 'addr')
-      }
+      } 
       if (Object.keys(this.errors).length > 0) {
         return
       }

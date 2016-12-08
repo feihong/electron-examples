@@ -7,13 +7,17 @@
   <link rel='stylesheet' href='styles.css'>
 
   <script>
-  // vue-router expects module and process to be defined
-  if (typeof module === 'undefined') module = {}
-  if (typeof process === 'undefined') process = {env: {}}
+  // Allows jQuery to work.
+  if (typeof module === 'object') {
+    window.module = module
+    module = undefined
+  }
+  </script>
   </script>
   <script src='https://unpkg.com/vue/dist/vue.js'></script>
-  <script src='https://unpkg.com/vue-router'></script>
   <script src='https://unpkg.com/vuex'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.1.1/vue-router.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue-focus/2.1.0/vue-focus.js'></script>
 </head>
 <body class='container'>
 
@@ -141,7 +145,7 @@
   </div>
 </script>
 
-<script src='http://code.jquery.com/jquery-3.1.1.min.js'></script>
+<script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
 <script src='page.js'></script>
 </body>
